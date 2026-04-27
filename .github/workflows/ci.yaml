@@ -6,7 +6,7 @@ on:
       - main   # change if needed
 
 jobs:
-  build:
+  build-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,3 +15,18 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name : push to docker hub
+        uses: docker/login-action@v4
+
+        with:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN}}
+
+      - name: build and push
+        uses: docker/build-push-action@v7
+        with :
+            context: ./backend
+            push: true
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skillapp:latest
+
