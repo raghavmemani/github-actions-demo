@@ -3,7 +3,7 @@ name: CI workflow
 on:
   push:
     branches:
-      - main   # change if needed
+      - main
 
 jobs:
   build-push:
@@ -11,22 +11,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4   # v5 is not stable everywhere
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name : push to docker hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v4
-
         with:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN}}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: build and push
+      - name: Build and Push Image
         uses: docker/build-push-action@v7
-        with :
-            context: ./backend
-            push: true
-            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skillapp:latest
-
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skillapp:latest
